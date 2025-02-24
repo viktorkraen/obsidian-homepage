@@ -236,3 +236,49 @@
 	height: 100%;
 	margin: 0 !important;
 }
+
+.homepage-empty-state-button-container {
+	display: flex;
+	justify-content: center;
+	margin-top: 20px;
+}
+
+.homepage-empty-state-button-container button {
+	font-size: 1.2em;
+	font-weight: bold;
+	padding: 10px 20px;
+	background-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+	border-radius: var(--radius-m);
+	box-shadow: var(--shadow-s);
+}
+
+.homepage-empty-state-button-container button:hover {
+	background-color: var(--interactive-accent-hover);
+}
+
+/* Стилі для кнопки в порожньому стані */
+.empty-state-action.homepage-button {
+	margin-bottom: 12px;
+}
+
+.empty-state-action.homepage-button button {
+	background-color: transparent;
+	color: var(--text-accent);
+	font-size: 14px;
+	font-weight: 500;
+	width: 100%;
+	height: 40px;
+	border-radius: 4px;
+	padding: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid var(--background-modifier-border);
+	transition: all 100ms ease-in-out;
+}
+
+.empty-state-action.homepage-button button:hover {
+	background-color: var(--background-modifier-hover);
+	border-color: var(--background-modifier-border-hover);
+}

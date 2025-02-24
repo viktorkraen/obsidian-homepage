@@ -1,4 +1,4 @@
-import { Notice, Keymap, Platform, Plugin, WorkspaceLeaf, addIcon } from "obsidian";
+import { Notice, Keymap, Platform, Plugin, WorkspaceLeaf, addIcon, ButtonComponent } from "obsidian";
 import { DEFAULT, MOBILE, Homepage, Kind, Period } from "./homepage";
 import { hasRequiredPeriodicity, LEGACY_MOMENT_KIND, MOMENT_MESSAGE } from "./periodic";
 import { DEFAULT_SETTINGS, HomepageSettings, HomepageSettingTab } from "./settings";
@@ -32,6 +32,14 @@ export default class HomepagePlugin extends Plugin {
 		this.communityPlugins = this.app.plugins.plugins;
 		this.homepage = this.getHomepage();
 		
+		this.registerEvent(
+			this.app.workspace.on("layout-change", () => {
+				if (Platform.isMobile) {
+					this.addHomepageButton();
+				}
+			})
+		);
+
 		this.app.workspace.onLayoutReady(async () => {
 			const openInitially = (
 				this.homepage.data.openOnStartup &&
@@ -45,6 +53,10 @@ export default class HomepagePlugin extends Plugin {
 			
 			this.unpatchReleaseNotes();
 			this.hideInterstitial();
+
+			if (Platform.isMobile) {
+				this.addHomepageButton();
+			}
 		});
 
 		addIcon("homepage", ICON);
@@ -250,5 +262,26 @@ export default class HomepagePlugin extends Plugin {
 		
 		this.saveData(settings);
 		return settings;
+	}
+
+	private addHomepageButton(): void {
+		setTimeout(() => {
+			const emptyStateEl = document.querySelector('.empty-state');
+			if (!emptyStateEl) return;
+
+			if (emptyStateEl.querySelector('.homepage-button')) return;
+
+			const buttonContainer = createEl('div', {
+				cls: 'empty-state-action homepage-button'
+			});
+
+			new ButtonComponent(buttonContainer)
+				.setButtonText("Open Homepage")
+				.onClick(() => {
+					this.homepage.open();
+				});
+
+			emptyStateEl.insertBefore(buttonContainer, emptyStateEl.firstChild);
+		}, 50);
 	}
 }

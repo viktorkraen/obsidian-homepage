@@ -1,4 +1,4 @@
-import { App, Platform, TFolder, TFile, View as OView, WorkspaceMobileDrawer } from "obsidian";
+import { App, Platform, TFolder, TFile, View as OView, WorkspaceMobileDrawer, ButtonComponent } from "obsidian";
 
 export function trimFile(file: TFile): string {
 	if (!file) return "";
@@ -71,7 +71,7 @@ export async function detachAllLeaves(app: App): Promise<void> {
 					{
 						"id": "e7a7b303c61786dc",
 						"type": "leaf",
-						"state": {"type": "empty", "state": {}, "icon": "lucide-file", "title": "New tab"}
+						"state": {"type": "empty", "state": {}}
 					}
 				]
 			}
@@ -85,6 +85,35 @@ export async function detachAllLeaves(app: App): Promise<void> {
 	if (Platform.isMobile) {
 		(app.workspace.rightSplit as WorkspaceMobileDrawer)?.updateInfo();
 		addSyncButton(app);
+
+		// Додаємо кнопку до стандартного порожнього стану
+		setTimeout(() => {
+			const emptyView = app.workspace.getActiveViewOfType(OView);
+			if (emptyView) {
+				const emptyStateContainer = emptyView.containerEl.querySelector('.empty-state');
+				if (emptyStateContainer) {
+					const buttonContainer = createEl('div', {
+						cls: 'empty-state-action homepage-button'
+					});
+
+					new ButtonComponent(buttonContainer)
+						.setButtonText("Open Homepage")
+						.onClick(() => {
+							const homepagePlugin = app.plugins.plugins['homepage'];
+							if (homepagePlugin) {
+								homepagePlugin.homepage.open();
+							}
+						});
+
+					// Вставляємо кнопку першою в списку
+					if (emptyStateContainer.firstChild) {
+						emptyStateContainer.insertBefore(buttonContainer, emptyStateContainer.firstChild);
+					} else {
+						emptyStateContainer.appendChild(buttonContainer);
+					}
+				}
+			}
+		}, 100); // Невелика затримка для впевненості, що порожній стан вже відрендерився
 	}
 }
 
