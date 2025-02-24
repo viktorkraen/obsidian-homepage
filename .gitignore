@@ -11,9 +11,6 @@ package-lock.json
 # build
 out
 
-# obsidian
-data.json
-
 # testing
 tests/*/
 !tests/vault/
